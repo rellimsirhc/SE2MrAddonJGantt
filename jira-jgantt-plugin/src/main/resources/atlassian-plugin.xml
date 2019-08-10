@@ -7,6 +7,10 @@
         <!-- <param name="plugin-logo">images/pluginLogo.png</param> -->
         <param name="plugin-icon">data/favicon.png</param>
         <param name="plugin-logo">data/favicon.png</param>
+        <param name="atlassian-data-center-compatible">true</param>
+        <param name="atlassian-data-center-status">compatible</param>
+        <param name="atlassian-licensing-enabled">false</param>
+        <param name="plugin-type">both</param>
     </plugin-info>
 
     <!-- add our i18n resource -->
