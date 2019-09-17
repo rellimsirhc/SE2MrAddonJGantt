@@ -7,14 +7,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>mraddon.hvqzao</groupId>
     <artifactId>jgantt</artifactId>
-    <version>2.4</version>
+    <version>2.13</version>
 
     <organization>
         <name>www.MrAddon.com raulpelaez@mraddon.com</name>
         <url>http://www.MrAddon.com/</url>
     </organization>
 
-    <name>MrAddon Gantt for Jira</name>
+    <name>Kanban Gantt for Jira</name>
     <description>This is the evolution of hvqzao:jgantt plugin for Atlassian JIRA by MrAddon. Based on this repo https://github.com/hvqzao</description>
     <packaging>atlassian-plugin</packaging>
 
