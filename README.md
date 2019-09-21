@@ -1,6 +1,6 @@
 # jgantt
 
-Simple Gantt visualisation for JIRA Agile Kanban board issues. Tested with Jira 6.4.6 and 7.1.2.
+Simple Gantt visualisation for JIRA Agile Kanban board issues. Tested with Jira 6.4, 7.1, 7.9 and the new Jira 8.4
 
 ![jgantt-button](https://cloud.githubusercontent.com/assets/4956006/14389634/ddc815c4-fdb3-11e5-91a5-9f44fe7b1c50.png)
 
