@@ -20,9 +20,9 @@ Atlassian JIRA Agile - jGantt standalone mode:
 
 https://www.youtube.com/watch?v=rbaDLdkNZqI
 
-## Download
+## Download (Jira 8.4 compatible)
 
-https://github.com/hvqzao/jgantt/releases/download/1.2/jgantt-1.2.jar
+https://github.com/MrAddon/jgantt/raw/master/jira-jgantt-plugin/download_executable/jgantt-2.22.jar
 
 ## License
 
