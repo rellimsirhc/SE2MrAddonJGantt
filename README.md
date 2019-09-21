@@ -1,4 +1,4 @@
-# jgantt
+# Kanban Gantt for Jira Server (jgantt)
 
 Simple Gantt visualisation for JIRA Agile Kanban board issues. Tested with Jira 6.4, 7.1, 7.9 and the new Jira 8.4
 
