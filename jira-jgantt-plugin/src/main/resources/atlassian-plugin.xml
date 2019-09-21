@@ -23,6 +23,7 @@
         <resource type="download" name="helper.js" location="/js/helper.js"/>
 
         <context>gh-rapid</context>
+        <context>atl.general</context>
     </web-resource>
     <web-resource key="jgantt-static" name="jgantt Static">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
