@@ -4,11 +4,12 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://jiratest.odigeo.com/secure/RapidBoard.jspa?*
+// @match        https://jira-test.odigeo.com/secure/RapidBoard.jspa?*
 // @grant        none
 // ==/UserScript==
 
 (function(a) {
+
     var pathname = window.location.pathname;
     if (pathname.indexOf("/secure/RapidBoard.jspa") >= 0 ) {
     a(document).ready(function() {
@@ -47,6 +48,8 @@
                             if (c = "None" != a(b[1]).text())
                                 if (c = 0 < a(b[1]).text().length) b =
                                     kk[0].split("/"), c = 3 == b.length ? !isNaN(b[0]) && 0 < "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ").indexOf(b[1]) + 1 && !isNaN(b[2]) : !1;
+                                if ( kk[0].split("-").length == 3 ) b =
+                                    kk[0].split("-"), c = 3 == b.length ? !isNaN(b[0]) && !isNaN(b[1]) && !isNaN(b[2]) : !1;
                             c && (g = !0)
                         });
                         g ? (a(".jgantt-enabled").parent().show(), a(".jgantt-disabled").parent().hide()) : (a(".jgantt-enabled").parent().hide(), a(".jgantt-disabled").parent().show())
