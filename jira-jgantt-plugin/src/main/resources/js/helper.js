@@ -47,7 +47,7 @@
                             //alert(kk[0]);
                             if (c = "None" != a(b[1]).text())
                                 if (c = 0 < a(b[1]).text().length) b =
-                                    kk[0].split("/"), c = 3 == b.length ? !isNaN(b[0]) && 0 < "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ").indexOf(b[1]) + 1 && !isNaN(b[2]) : !1;
+                                    kk[0].split("/"), c = 3 == b.length ? !isNaN(b[0]) && (0 < "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ").indexOf(b[1]) + 1 || !isNaN(b[1])) && !isNaN(b[2]) : !1;
                                 if ( kk[0].split("-").length == 3 ) b =
                                     kk[0].split("-"), c = 3 == b.length ? !isNaN(b[0]) && !isNaN(b[1]) && !isNaN(b[2]) : !1;
                             c && (g = !0)

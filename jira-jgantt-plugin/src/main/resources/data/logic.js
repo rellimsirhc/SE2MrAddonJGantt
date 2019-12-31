@@ -117,13 +117,22 @@
                         var start_date_time =""
                         var end_date_time =""
                         var start_text = kk[0].split('/');
-                        if (! array_equal(start_text, ['None']) && start_text.length == 3 && ! isNaN(start_text[0]) && month(start_text[1]) > 0 && ! isNaN(start_text[2])) {
-                                start_date = new Date('20'+start_text[2], month(start_text[1])-1, start_text[0]);
-                                start_text = pad(start_text[0],2)+'-'+pad(month(start_text[1]),2)+'-20'+start_text[2];
+                        if (! array_equal(start_text, ['None']) && start_text.length == 3 && ! isNaN(start_text[0]) && (month(start_text[1]) > 0 || ! isNaN(start_text[1])) && ! isNaN(start_text[2])) {
+                                if ( start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], start_text[1], start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(start_text[1],2)+'-'+start_text[2];
+                                } else  {
+                                    start_date = new Date('20'+start_text[2], month(start_text[1])-1, start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(month(start_text[1]),2)+'-20'+start_text[2];
+                                }    
                                 end_date = new Date(start_date);
                                 end_text = kk2[0].split('/');
-                                if (! array_equal(end_text, ['None']) && end_text.length == 3 && ! isNaN(end_text[0]) && month(end_text[1]) > 0 && ! isNaN(end_text[2])) {
-					end_date =  new Date('20'+end_text[2], month(end_text[1])-1, end_text[0]);
+                                if (! array_equal(end_text, ['None']) && end_text.length == 3 && ! isNaN(end_text[0]) && ( month(end_text[1]) > 0 ||  ! isNaN(end_text[1])) && ! isNaN(end_text[2])) {
+                                        if ( end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], end_text[1], end_text[0]);
+                                         } else  {
+                                            end_date =  new Date('20'+end_text[2], month(end_text[1])-1, end_text[0]);
+                                         } 
                                 }
                 
 				duration = Math.round((end_date - start_date)/(1000*60*60*24));
