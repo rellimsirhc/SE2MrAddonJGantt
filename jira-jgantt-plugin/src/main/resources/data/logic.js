@@ -22,8 +22,42 @@
 			return str;
 		}
 
+                //Function to read the cookies
+                function readCookie(name) {
+                  var nameEQ = name + "=";
+                  var ca = document.cookie.split(';');
+                  for(var i=0;i < ca.length;i++) {
+                      var c = ca[i];
+                      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+                  }
+                  return null;
+                }
+                        
 		var month = function(name) {
-			return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(name) + 1;
+                        
+                        var gantt_locale = readCookie("gantt-locale")
+                        var language = gantt_locale.split("_")
+                        if (language[0] == "en")
+                            return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(name) + 1;
+                        else if (language[0] == "nl")
+                            return ['jan','febr','mrt','apr','mei','juni','juli','aug','sep','okt','nov','dec'].indexOf(name.toLowerCase()) + 1;
+                        else if (language[0] == "de")
+                            return ['Jan','Feb','März','Apr','Mai','Juni','Juli','Aug','Sept','Okt','Nov','Dez'].indexOf(name) + 1;
+                        else if (language[0] == "cs")
+                            return ['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'].indexOf(name.toLowerCase()) + 1;
+                        else if (language[0] == "es")
+                            return ['ene','feb','mar','abr','may','jun','jul','ago','sept','oct','nov','dic'].indexOf(name) + 1;
+                        else if (language[0] == "fr")
+                            return ['janv.','févr.','mars.','avr.','mai.','juin.','juil.','août.','sept.','oct.','nov.','déc.'].indexOf(name) + 1;
+                        else if (language[0] == "it")
+                            return ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'].indexOf(name) + 1;
+                        else if (language[0] == "zh")
+                            return ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"].indexOf(name) + 1;
+                        else
+                            return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(name) + 1;
+                        
+                        //return new Date(Date.parse(name +" 1, 2012")).getMonth()+1
 		}
 
 		var array_equal = function(a1,a2) {
@@ -112,27 +146,74 @@
 			var progress;
                         //Raul change to accept Date-Time fields
                         var kk = $(extra[1]).text().split(" ");
-                        var kk2 = $(extra[2]).text().split(" ");
+                        var kk2 = "None".split("x");
+                        if ( $(extra[2]).text() != null) {
+                            kk2 = $(extra[2]).text().split(" ");
+                        }
+                        
                         var end_text =""
                         var start_date_time =""
                         var end_date_time =""
+                        
+                        var gantt_date_format = readCookie("gantt-date-format")
+                        
                         var start_text = kk[0].split('/');
-                        if (! array_equal(start_text, ['None']) && start_text.length == 3 && ! isNaN(start_text[0]) && (month(start_text[1]) > 0 || ! isNaN(start_text[1])) && ! isNaN(start_text[2])) {
-                                if ( start_text[2].length == 4 ) {
+                        if (! array_equal(start_text, ['None']) && start_text.length == 3 ) {
+                                if ( (gantt_date_format == "dd/MM/yyyy" || gantt_date_format == "d/MM/yyyy" || gantt_date_format == "dd/M/yyyy" || gantt_date_format == "d/M/yyyy" ) && start_text[2].length == 4 ) {
                                     start_date = new Date(start_text[2], start_text[1], start_text[0]);
                                     start_text = pad(start_text[0],2)+'-'+pad(start_text[1],2)+'-'+start_text[2];
-                                } else  {
+                                } else if ( (gantt_date_format == "dd/MM/yy" || gantt_date_format == "d/MM/yy" || gantt_date_format == "dd/M/yy" || gantt_date_format == "d/M/yy" ) && start_text[2].length == 2 ) {
+                                    start_date = new Date('20'+start_text[2], start_text[1], start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(start_text[1],2)+'-20'+start_text[2];
+                                } else if ( (gantt_date_format == "dd/MMM/yy" || gantt_date_format == "d/MMM/yy" ) && start_text[2].length == 2 ) {
                                     start_date = new Date('20'+start_text[2], month(start_text[1])-1, start_text[0]);
                                     start_text = pad(start_text[0],2)+'-'+pad(month(start_text[1]),2)+'-20'+start_text[2];
-                                }    
+                                } else if ( (gantt_date_format == "dd/MMM/yyyy" || gantt_date_format == "d/MMM/yyyy") && start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], month(start_text[1])-1, start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(month(start_text[1]),2)+start_text[2];
+                                } else if ( (gantt_date_format == "MM/dd/yyyy" || gantt_date_format == "M/dd/yyyy" || gantt_date_format == "MM/d/yyyy"|| gantt_date_format == "M/d/yyyy") && start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], start_text[0], start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(start_text[0],2)+'-'+start_text[2];
+                                } else if ( (gantt_date_format == "MM/dd/yy" || gantt_date_format == "M/dd/yy" || gantt_date_format == "MM/d/yy"|| gantt_date_format == "M/d/yy") && start_text[2].length == 2 ) {
+                                    start_date = new Date('20'+start_text[2], start_text[0], start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(start_text[0],2)+'-20'+start_text[2];
+                                } else if ( (gantt_date_format == "MMM/dd/yyyy" || gantt_date_format == "MMM/d/yyyy") && start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], month(start_text[0])-1, start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(month(start_text[0]),2)+'-'+start_text[2];
+                                } else if ( (gantt_date_format == "MMM/dd/yy" || gantt_date_format == "MMM/d/yy") && start_text[2].length == 2 ) {
+                                    start_date = new Date('20'+start_text[2], month(start_text[0])-1, start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(month(start_text[0]),2)+'-20'+start_text[2];
+                                } else if ( (gantt_date_format == "yy/MM/dd" || gantt_date_format == "yy/M/d" || gantt_date_format == "yy/MM/d" ||gantt_date_format == "yy/M/dd"  ) && start_text[0].length == 2 ) {
+                                    start_date = new Date('20'+start_text[0], start_text[1], start_text[2]);
+                                    start_text = pad(start_text[2],2)+'-'+pad(start_text[1],2)+'-20'+start_text[0];
+                                } else if ( (gantt_date_format == "yyyy/MM/dd" || gantt_date_format == "yyyy/M/d" || gantt_date_format == "yyyy/MM/d" ||gantt_date_format == "yyyy/M/dd"  ) && start_text[0].length == 4 ) {
+                                    start_date = new Date(start_text[0], start_text[1], start_text[2]);
+                                    start_text = pad(start_text[2],2)+'-'+pad(start_text[1],2)+'-'+start_text[0];
+                                }      
                                 end_date = new Date(start_date);
                                 end_text = kk2[0].split('/');
-                                if (! array_equal(end_text, ['None']) && end_text.length == 3 && ! isNaN(end_text[0]) && ( month(end_text[1]) > 0 ||  ! isNaN(end_text[1])) && ! isNaN(end_text[2])) {
-                                        if ( end_text[2].length == 4 ) {
+                                if (! array_equal(end_text, ['None']) && end_text.length == 3 ) {
+                                        if ( (gantt_date_format == "dd/MM/yyyy" || gantt_date_format == "d/MM/yyyy" || gantt_date_format == "dd/M/yyyy" || gantt_date_format == "d/M/yyyy" ) && end_text[2].length == 4 ) {
                                             end_date =  new Date(end_text[2], end_text[1], end_text[0]);
-                                         } else  {
-                                            end_date =  new Date('20'+end_text[2], month(end_text[1])-1, end_text[0]);
-                                         } 
+                                         } else if ( (gantt_date_format == "dd/MM/yy" || gantt_date_format == "d/MM/yy" || gantt_date_format == "dd/M/yy" || gantt_date_format == "d/M/yy" ) && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], end_text[1], end_text[0]);
+                                         } else if ( (gantt_date_format == "dd/MMM/yy" || gantt_date_format == "d/MMM/yy" ) && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], month(end_text[1])-1, end_text[0]); 
+                                         } else if ( (gantt_date_format == "dd/MMM/yyyy" || gantt_date_format == "d/MMM/yyyy") && end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], month(end_text[1])-1, end_text[0]);
+                                         } else if ( (gantt_date_format == "MM/dd/yyyy" || gantt_date_format == "M/dd/yyyy" || gantt_date_format == "MM/d/yyyy"|| gantt_date_format == "M/d/yyyy") && end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], end_text[0], end_text[1]);
+                                         } else if ( (gantt_date_format == "MM/dd/yy" || gantt_date_format == "M/dd/yy" || gantt_date_format == "MM/d/yy"|| gantt_date_format == "M/d/yy") && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], end_text[0], end_text[1]);
+                                         } else if ( (gantt_date_format == "MMM/dd/yyyy" || gantt_date_format == "MMM/d/yyyy") && end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], month(end_text[0])-1, end_text[1]);
+                                         } else if ( (gantt_date_format == "MMM/dd/yy" || gantt_date_format == "MMM/d/yy") && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], month(end_text[0])-1, end_text[1]);
+                                         } else if ( (gantt_date_format == "yy/MM/dd" || gantt_date_format == "yy/M/d" || gantt_date_format == "yy/MM/d" ||gantt_date_format == "yy/M/dd"  ) && end_text[0].length == 2  ) {
+                                            end_date =  new Date('20'+end_text[0], end_text[1], end_text[2]);
+                                         } else if ( (gantt_date_format == "yyyy/MM/dd" || gantt_date_format == "yyyy/M/d" || gantt_date_format == "yyyy/MM/d" ||gantt_date_format == "yyyy/M/dd"  ) && end_text[0].length == 4  ) {
+                                            end_date =  new Date(end_text[0], end_text[1], end_text[2]);
+                                         }
                                 }
                 
 				duration = Math.round((end_date - start_date)/(1000*60*60*24));
@@ -164,13 +245,62 @@
 			}
                         if (start_text.length < 3) {
                         start_text = kk[0].split('-');
-                        if (! array_equal(start_text, ['None']) && start_text.length == 3 && ! isNaN(start_text[0]) && ! isNaN(start_text[1]) && ! isNaN(start_text[2])) {
-                                start_date = new Date(start_text[0], start_text[1], start_text[2]);
-                                start_text = pad(start_text[2],2)+'-'+pad(start_text[1],2)+'-'+start_text[0];
+                        if (! array_equal(start_text, ['None']) && start_text.length == 3) {
+                                if ( (gantt_date_format == "dd-MM-yyyy" || gantt_date_format == "d-MM-yyyy" || gantt_date_format == "dd-M-yyyy" || gantt_date_format == "d-M-yyyy" ) && start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], start_text[1], start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(start_text[1],2)+'-'+start_text[2];
+                                } else if ( (gantt_date_format == "dd-MM-yy" || gantt_date_format == "d-MM-yy" || gantt_date_format == "dd-M-yy" || gantt_date_format == "d-M-yy" ) && start_text[2].length == 2 ) {
+                                    start_date = new Date('20'+start_text[2], start_text[1], start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(start_text[1],2)+'-20'+start_text[2];
+                                } else if ( (gantt_date_format == "dd-MMM-yy" || gantt_date_format == "d-MMM-yy" ) && start_text[2].length == 2 ) {
+                                    start_date = new Date('20'+start_text[2], month(start_text[1])-1, start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(month(start_text[1]),2)+'-20'+start_text[2];
+                                } else if ( (gantt_date_format == "dd-MMM-yyyy" || gantt_date_format == "d-MMM-yyyy") && start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], month(start_text[1])-1, start_text[0]);
+                                    start_text = pad(start_text[0],2)+'-'+pad(month(start_text[1]),2)+start_text[2];
+                                } else if ( (gantt_date_format == "MM-dd-yyyy" || gantt_date_format == "M-dd-yyyy" || gantt_date_format == "MM-d-yyyy"|| gantt_date_format == "M-d-yyyy") && start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], start_text[0], start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(start_text[0],2)+'-'+start_text[2];
+                                } else if ( (gantt_date_format == "MM-dd-yy" || gantt_date_format == "M-dd-yy" || gantt_date_format == "MM-d-yy"|| gantt_date_format == "M-d-yy") && start_text[2].length == 2 ) {
+                                    start_date = new Date('20'+start_text[2], start_text[0], start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(start_text[0],2)+'-20'+start_text[2];
+                                } else if ( (gantt_date_format == "MMM-dd-yyyy" || gantt_date_format == "MMM-d-yyyy") && start_text[2].length == 4 ) {
+                                    start_date = new Date(start_text[2], month(start_text[0])-1, start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(month(start_text[0]),2)+'-'+start_text[2];
+                                } else if ( (gantt_date_format == "MMM-dd-yy" || gantt_date_format == "MMM-d-yy") && start_text[2].length == 2 ) {
+                                    start_date = new Date('20'+start_text[2], month(start_text[0])-1, start_text[1]);
+                                    start_text = pad(start_text[1],2)+'-'+pad(month(start_text[0]),2)+'-20'+start_text[2];
+                                } else if ( (gantt_date_format == "yy-MM-dd" || gantt_date_format == "yy-M-d" || gantt_date_format == "yy-MM-d" ||gantt_date_format == "yy-M-dd"  ) && start_text[0].length == 2 ) {
+                                    start_date = new Date('20'+start_text[0], start_text[1], start_text[2]);
+                                    start_text = pad(start_text[2],2)+'-'+pad(start_text[1],2)+'-20'+start_text[0];
+                                } else if ( (gantt_date_format == "yyyy-MM-dd" || gantt_date_format == "yyyy-M-d" || gantt_date_format == "yyyy-MM-d" ||gantt_date_format == "yyyy-M-dd"  ) && start_text[0].length == 4 ) {
+                                    start_date = new Date(start_text[0], start_text[1], start_text[2]);
+                                    start_text = pad(start_text[2],2)+'-'+pad(start_text[1],2)+'-'+start_text[0];
+                                }     
                                 end_date = new Date(start_date);
                                 end_text = kk2[0].split('-');
-                                if (! array_equal(end_text, ['None']) && end_text.length == 3 && ! isNaN(end_text[0]) && ! isNaN(end_text[1]) && ! isNaN(end_text[2])) {
-					end_date =  new Date(end_text[0], end_text[1], end_text[2]);
+                                if (! array_equal(end_text, ['None']) && end_text.length == 3 ) {
+                                        if ( (gantt_date_format == "dd-MM-yyyy" || gantt_date_format == "d-MM-yyyy" || gantt_date_format == "dd-M-yyyy" || gantt_date_format == "d-M-yyyy" ) && end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], end_text[1], end_text[0]);
+                                         } else if ( (gantt_date_format == "dd-MM-yy" || gantt_date_format == "d-MM-yy" || gantt_date_format == "dd-M-yy" || gantt_date_format == "d-M-yy" ) && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], end_text[1], end_text[0]);
+                                         } else if ( (gantt_date_format == "dd-MMM-yy" || gantt_date_format == "d-MMM-yy" ) && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], month(end_text[1])-1, end_text[0]); 
+                                         } else if ( (gantt_date_format == "dd-MMM-yyyy" || gantt_date_format == "d-MMM-yyyy") && end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], month(end_text[1])-1, end_text[0]);
+                                         } else if ( (gantt_date_format == "MM-dd-yyyy" || gantt_date_format == "M-dd-yyyy" || gantt_date_format == "MM-d-yyyy"|| gantt_date_format == "M-d-yyyy") && end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], end_text[0], end_text[1]);
+                                         } else if ( (gantt_date_format == "MM-dd-yy" || gantt_date_format == "M-dd-yy" || gantt_date_format == "MM-d-yy"|| gantt_date_format == "M-d-yy") && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], end_text[0], end_text[1]);
+                                         } else if ( (gantt_date_format == "MMM-dd-yyyy" || gantt_date_format == "MMM-d-yyyy") && end_text[2].length == 4 ) {
+                                            end_date =  new Date(end_text[2], month(end_text[0])-1, end_text[1]);
+                                         } else if ( (gantt_date_format == "MMM-dd-yy" || gantt_date_format == "MMM-d-yy") && end_text[2].length == 2 ) {
+                                            end_date =  new Date('20'+end_text[2], month(end_text[0])-1, end_text[1]);
+                                         } else if ( (gantt_date_format == "yy-MM-dd" || gantt_date_format == "yy-M-d" || gantt_date_format == "yy-MM-d" ||gantt_date_format == "yy-M-dd"  ) && end_text[0].length == 2  ) {
+                                            end_date =  new Date('20'+end_text[0], end_text[1], end_text[2]);
+                                         } else if ( (gantt_date_format == "yyyy-MM-dd" || gantt_date_format == "yyyy-M-d" || gantt_date_format == "yyyy-MM-d" ||gantt_date_format == "yyyy-M-dd"  ) && end_text[0].length == 4  ) {
+                                            end_date =  new Date(end_text[0], end_text[1], end_text[2]);
+                                         }
                                 }
                 
 				duration = Math.round((end_date - start_date)/(1000*60*60*24));
@@ -201,6 +331,7 @@
 				//}
 			}
                         }
+                
 			if (add == true) { 
 				//console.log(start_text, add, JSON.stringify({text:title, start_date:start_text, duration:duration, open:true, color:color, progress:progress, parent:owner}));
 				if (owners_added.indexOf(owner) == -1) {
